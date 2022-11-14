@@ -1,7 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Put, Body } from '@nestjs/common';
 import { SurveyService } from './survey.service';
-import { createFormDto, SurveyorDto, updateFormDto } from './dto';
+import {
+  createFormDto,
+  SurveyorDto,
+  updateFormDto,
+  extractUrlDto,
+} from './dto';
 
 @Controller()
 export class SurveyController {
@@ -25,5 +30,15 @@ export class SurveyController {
   @Post('createUser')
   createUser(@Body() dto: SurveyorDto) {
     return this.surveyService.createUser(dto);
+  }
+
+  @Post('extractCss')
+  extractCss(@Body() dto: extractUrlDto) {
+    return this.surveyService.extractCss(dto);
+  }
+
+  @Get('testAxios')
+  testAxios() {
+    return this.surveyService.testAxios();
   }
 }
