@@ -2,7 +2,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import type { createFormDto, updateFormDto, extractUrlDto } from './dto';
+import type { createSurveyDto, updateSurveyDto, extractUrlDto } from './dto';
 
 @Injectable()
 export class SurveyService {
@@ -10,11 +10,16 @@ export class SurveyService {
     private prisma: PrismaService,
     private readonly httpService: HttpService,
   ) {}
-  allForms() {
+
+  getAllSurveys() {
     return { obj: 'this is the shit ' };
   }
 
-  async createForm(dto: createFormDto) {
+  getSurveyById() {
+    return { obj: 'this is the shit ' };
+  }
+
+  async createSurvey(dto: createSurveyDto) {
     const form = await this.prisma.form.create({
       data: {
         createdBy: 3,
@@ -25,7 +30,19 @@ export class SurveyService {
     return form.id;
   }
 
-  async updateForm(dto: updateFormDto) {
+  async updateSurveyById(dto: updateSurveyDto) {
+    const form = await this.prisma.form.update({
+      where: {
+        id: parseInt(dto.formId),
+      },
+      data: {
+        title: dto.title,
+      },
+    });
+    return form;
+  }
+
+  async deleteSurveyById(dto: updateSurveyDto) {
     const form = await this.prisma.form.update({
       where: {
         id: parseInt(dto.formId),

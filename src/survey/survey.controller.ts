@@ -1,25 +1,60 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { SurveyService } from './survey.service';
-import { createFormDto, updateFormDto, extractUrlDto } from './dto';
+import { createSurveyDto, updateSurveyDto, extractUrlDto } from './dto';
+import { JwtGuard } from '../users/guard/jwt.guard';
+import { GetSurveyor } from '../users/decorator/get-surveyor.decorator';
 
+@UseGuards(JwtGuard)
 @Controller()
 export class SurveyController {
   constructor(private surveyService: SurveyService) {}
 
-  @Get('allForms')
-  allForms() {
-    return this.surveyService.allForms();
+  @Get('allSurveys')
+  getAllSurveys(@GetSurveyor('id') userId: number) {
+    return this.surveyService.getAllSurveys();
+  }
+
+  @Get('survey/:id')
+  getSurveyById(
+    @GetSurveyor('id') userId: number,
+    @Param('id', ParseIntPipe) surveyId: number,
+  ) {
+    return this.surveyService.getSurveyById();
   }
 
   @Post('create')
-  createForm(@Body() dto: createFormDto) {
-    return this.surveyService.createForm(dto);
+  createSurvey(
+    @GetSurveyor('id') userId: number,
+    @Body() dto: createSurveyDto,
+  ) {
+    return this.surveyService.createSurvey(dto);
   }
 
-  @Put('updateForm')
-  updateForm(@Body() dto: updateFormDto) {
-    return this.surveyService.updateForm(dto);
+  @Put('updateSurvey')
+  updateSurveyById(
+    @GetSurveyor('id') userId: number,
+    @Body() dto: updateSurveyDto,
+  ) {
+    return this.surveyService.updateSurveyById(dto);
+  }
+
+  @Delete('updateForm')
+  deleteSurveyById(
+    @GetSurveyor('id') userId: number,
+    @Body() dto: updateSurveyDto,
+  ) {
+    return this.surveyService.deleteSurveyById(dto);
   }
 
   @Post('extractCss')

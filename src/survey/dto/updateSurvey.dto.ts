@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { IsNumberString, IsString, IsNotEmpty } from 'class-validator';
 
-export class updateFormDto {
+export class updateSurveyDto {
   @IsString()
   @IsNotEmpty()
   formId: string;
