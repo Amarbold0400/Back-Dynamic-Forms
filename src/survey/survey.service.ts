@@ -1,15 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
-import { PrismaService } from 'src/prisma/prisma.service';
-import type {
-  createFormDto,
-  SurveyorDto,
-  updateFormDto,
-  extractUrlDto,
-} from './dto';
+import { PrismaService } from '../prisma/prisma.service';
+import type { createFormDto, updateFormDto, extractUrlDto } from './dto';
 
 @Injectable()
 export class SurveyService {
@@ -42,17 +35,6 @@ export class SurveyService {
       },
     });
     return form;
-  }
-
-  async createUser(dto: SurveyorDto) {
-    const user = await this.prisma.surveyor.create({
-      data: {
-        email: dto.email,
-        name: dto.name,
-      },
-    });
-
-    return user;
   }
 
   async extractCss(dto: extractUrlDto) {
@@ -113,10 +95,6 @@ export class SurveyService {
     // By now all colors should be in one cluster
     // return lastCluster;
     return { colors: lastCluster };
-  }
-
-  testAxios(): Observable<AxiosResponse> {
-    return this.httpService.get('https://dummyjson.com/products/1');
   }
 
   colorDistance(color1, color2) {

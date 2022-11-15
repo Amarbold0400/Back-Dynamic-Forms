@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,8 +6,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-// Below is for SURVEY
 
 model Surveyor {
   id Int @id @default(autoincrement())
@@ -23,7 +18,7 @@ model Surveyor {
 model Form {
   id Int @id @default(autoincrement())
 
-  surveyor Surveyor @relation(fields: [createdBy], references: [id])
+  surveyor Surveyor @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   createdBy Int 
 
   title String
@@ -35,13 +30,13 @@ model Form {
 model Question {
   id Int @id @default(autoincrement())
 
-  form Form @relation(fields: [formId], references: [id])
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId Int
 
-  questionType QuestionType @relation(fields: [questionTypeId], references: [id])
+  questionType QuestionType @relation(fields: [questionTypeId], references: [id], onDelete: Cascade)
   questionTypeId Int
 
-  questionOption QuestionOption @relation(fields: [questionOptionId], references: [id])
+  questionOption QuestionOption @relation(fields: [questionOptionId], references: [id], onDelete: Cascade)
   questionOptionId Int
 
   order Int
@@ -66,8 +61,6 @@ model QuestionOption {
   question Question[]
 }
 
-// Below is for RESULT
-
 model Surveyee {
   id Int @id @default(autoincrement())
   name String
@@ -78,10 +71,10 @@ model Surveyee {
 model Result {
   id Int @id @default(autoincrement())
 
-  form Form @relation(fields: [formId], references: [id])
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId Int
 
-  surveyee Surveyee @relation(fields: [surveyeeId], references: [id])
+  surveyee Surveyee @relation(fields: [surveyeeId], references: [id], onDelete: Cascade)
   surveyeeId Int
 
   answers Answer[]
@@ -90,12 +83,11 @@ model Result {
 model Answer {
   id Int @id @default(autoincrement())
 
-  question Question @relation(fields: [questionId], references: [id])
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
 
-  result Result @relation(fields: [resultId], references: [id])
+  result Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
   resultId Int
 
   answer String
-
 }

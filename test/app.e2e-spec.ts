@@ -1,24 +1,165 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import * as pactum from 'pactum';
+import { UsersDto } from '../src/users/dto/users.dto';
+import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('App e2e', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    app = moduleFixture.createNestApplication();
+    app = moduleRef.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+      }),
+    );
     await app.init();
+    await app.listen(3333);
+    pactum.request.setBaseUrl('http://localhost:3333');
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(() => {
+    app.close();
+  });
+
+  describe('Users', () => {
+    const dto: UsersDto = {
+      name: 'Amana',
+      email: 'amana@gmail.com',
+    };
+
+    describe('Signup', () => {
+      it('it should throw 400 if name is empty', () => {
+        return pactum
+          .spec()
+          .post('/signup')
+          .withBody({
+            email: 'amana@gmail.com',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if email is empty', () => {
+        return pactum
+          .spec()
+          .post('/signup')
+          .withBody({
+            name: 'Amana',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if email is incorrect', () => {
+        return pactum
+          .spec()
+          .post('/signup')
+          .withBody({
+            name: 'Amana',
+            email: 'amana',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if no dto', () => {
+        return pactum.spec().post('/signup').withBody({}).expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should signup', () => {
+        return pactum.spec().post('/signup').withBody(dto).expectStatus(201);
+        // .inspect();
+      });
+    });
+
+    describe('Login', () => {
+      it('it should throw 400 if name is empty', () => {
+        return pactum
+          .spec()
+          .post('/login')
+          .withBody({
+            email: 'amana@gmail.com',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if email is empty', () => {
+        return pactum
+          .spec()
+          .post('/login')
+          .withBody({
+            name: 'Amana',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if email is incorrect', () => {
+        return pactum
+          .spec()
+          .post('/login')
+          .withBody({
+            name: 'Amana',
+            email: 'amana',
+          })
+          .expectStatus(400);
+        // .inspect();
+      });
+
+      it('it should throw 400 if no dto', () => {
+        return pactum.spec().post('/login').withBody({}).expectStatus(400);
+        // .inspect();
+      });
+
+      it('It should login', () => {
+        return pactum
+          .spec()
+          .post('/login')
+          .withBody(dto)
+          .expectStatus(201)
+          .stores('userAccessToken', 'access_token');
+      });
+    });
+
+    describe('GetSurveyor', () => {
+      it('it should throw if no token', () => {
+        return pactum
+          .spec()
+          .get('/getSurveyor')
+          .withHeaders({})
+          .expectStatus(401);
+      });
+
+      it('it should get current surveyor', () => {
+        return pactum
+          .spec()
+          .get('/getSurveyor')
+          .withHeaders({ Authorization: `Bearer $S{userAccessToken}` })
+          .expectStatus(200);
+      });
+    });
+  });
+
+  describe('Survey', () => {
+    describe('Get all Surveys', () => {});
+    describe('Get Survey By ID', () => {});
+    describe('Create Survey', () => {});
+    describe('Update Survey', () => {});
+    describe('Delete Survey', () => {});
+    describe('Extract Css', () => {});
+  });
+
+  describe('Result', () => {
+    // Below means to complete the survey
+    describe('Create Results', () => {});
+    describe('Get All Results', () => {});
+    describe('Get Result By ID', () => {});
   });
 });
