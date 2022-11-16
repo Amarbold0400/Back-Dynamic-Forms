@@ -73,8 +73,13 @@ describe('App e2e', () => {
       });
 
       it('it should signup', () => {
-        return pactum.spec().post('/signup').withBody(dto).expectStatus(201);
-        // .inspect();
+        return pactum
+          .spec()
+          .post('/signup')
+          .withBody(dto)
+          .expectStatus(201)
+          .stores('uId', 'userId');
+        // .inspect()
       });
     });
 
@@ -125,6 +130,7 @@ describe('App e2e', () => {
           .withBody(dto)
           .expectStatus(201)
           .stores('userAccessToken', 'access_token');
+        // .inspect();
       });
     });
 
@@ -148,18 +154,79 @@ describe('App e2e', () => {
   });
 
   describe('Survey', () => {
-    describe('Get all Surveys', () => {});
-    describe('Get Survey By ID', () => {});
-    describe('Create Survey', () => {});
-    describe('Update Survey', () => {});
-    describe('Delete Survey', () => {});
-    describe('Extract Css', () => {});
+    describe('Get all empty Surveys', () => {
+      it('it should get empty array', () => {
+        return pactum
+          .spec()
+          .get('/allSurveys')
+          .withHeaders({ Authorization: `Bearer $S{userAccessToken}` })
+          .expectStatus(200)
+          .expectBody([]);
+        // .inspect();
+      });
+    });
+    describe('Create Survey', () => {
+      const dto = {
+        title: 'First Survey',
+        createdBy: '$S{uId}',
+      };
+      it('it should create a survey', () => {
+        return pactum
+          .spec()
+          .post('/create')
+          .withBody(dto)
+          .withHeaders({ Authorization: `Bearer $S{userAccessToken}` })
+          .expectStatus(201)
+          .stores('surveyId', 'id');
+        // .inspect();
+      });
+    });
+    describe('Get Survey By ID', () => {
+      it('should get survey by id', () => {
+        return pactum
+          .spec()
+          .get('/survey/{id}')
+          .withPathParams('id', '$S{surveyId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAccessToken}',
+          })
+          .expectStatus(200)
+          .expectBodyContains('$S{surveyId}');
+        // .inspect();
+      });
+    });
+    describe('Get all Surveys', () => {
+      it('it should get an array of length', () => {
+        return pactum
+          .spec()
+          .get('/allSurveys')
+          .withHeaders({ Authorization: `Bearer $S{userAccessToken}` })
+          .expectStatus(200)
+          .expectJsonLength(1);
+        // .inspect();
+      });
+    });
+    describe('Delete Survey', () => {
+      it('it should delete survey by id', () => {
+        return pactum
+          .spec()
+          .delete('/survey/{id}')
+          .withPathParams('id', '$S{surveyId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAccessToken}',
+          })
+          .expectStatus(204)
+          .inspect();
+      });
+    });
+    // describe('Update Survey', () => {});
+    // describe('Extract Css', () => {});
   });
 
-  describe('Result', () => {
-    // Below means to complete the survey
-    describe('Create Results', () => {});
-    describe('Get All Results', () => {});
-    describe('Get Result By ID', () => {});
-  });
+  // describe('Result', () => {
+  //   // Below means to complete the survey
+  //   describe('Create Results', () => {});
+  //   describe('Get All Results', () => {});
+  //   describe('Get Result By ID', () => {});
+  // });
 });

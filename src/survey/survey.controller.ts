@@ -9,6 +9,8 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { createSurveyDto, updateSurveyDto, extractUrlDto } from './dto';
@@ -22,7 +24,7 @@ export class SurveyController {
 
   @Get('allSurveys')
   getAllSurveys(@GetSurveyor('id') userId: number) {
-    return this.surveyService.getAllSurveys();
+    return this.surveyService.getAllSurveys(userId);
   }
 
   @Get('survey/:id')
@@ -30,7 +32,7 @@ export class SurveyController {
     @GetSurveyor('id') userId: number,
     @Param('id', ParseIntPipe) surveyId: number,
   ) {
-    return this.surveyService.getSurveyById();
+    return this.surveyService.getSurveyById(userId, surveyId);
   }
 
   @Post('create')
@@ -38,10 +40,10 @@ export class SurveyController {
     @GetSurveyor('id') userId: number,
     @Body() dto: createSurveyDto,
   ) {
-    return this.surveyService.createSurvey(dto);
+    return this.surveyService.createSurvey(userId, dto);
   }
 
-  @Put('updateSurvey')
+  @Put('survey/:id')
   updateSurveyById(
     @GetSurveyor('id') userId: number,
     @Body() dto: updateSurveyDto,
@@ -49,12 +51,13 @@ export class SurveyController {
     return this.surveyService.updateSurveyById(dto);
   }
 
-  @Delete('updateForm')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('survey/:id')
   deleteSurveyById(
     @GetSurveyor('id') userId: number,
-    @Body() dto: updateSurveyDto,
+    @Param('id', ParseIntPipe) surveyId: number,
   ) {
-    return this.surveyService.deleteSurveyById(dto);
+    return this.surveyService.deleteSurveyById(userId, surveyId);
   }
 
   @Post('extractCss')

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { createSurveyDto, updateSurveyDto, extractUrlDto } from './dto';
 
@@ -11,23 +11,40 @@ export class SurveyService {
     private readonly httpService: HttpService,
   ) {}
 
-  getAllSurveys() {
-    return { obj: 'this is the shit ' };
+  getAllSurveys(userId: number) {
+    return this.prisma.form.findMany({
+      where: {
+        createdBy: userId,
+      },
+    });
   }
 
-  getSurveyById() {
-    return { obj: 'this is the shit ' };
+  getSurveyById(userId: number, surveyId: number) {
+    return this.prisma.form.findFirst({
+      where: {
+        id: surveyId,
+        createdBy: userId,
+      },
+    });
   }
 
-  async createSurvey(dto: createSurveyDto) {
+  async createSurvey(userId: number, dto: createSurveyDto) {
+    const user = this.prisma.surveyor.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      throw new ForbiddenException();
+    }
     const form = await this.prisma.form.create({
       data: {
-        createdBy: 3,
+        createdBy: userId,
         title: dto.title,
       },
     });
 
-    return form.id;
+    return { id: form.id };
   }
 
   async updateSurveyById(dto: updateSurveyDto) {
@@ -42,16 +59,22 @@ export class SurveyService {
     return form;
   }
 
-  async deleteSurveyById(dto: updateSurveyDto) {
-    const form = await this.prisma.form.update({
+  async deleteSurveyById(userId: number, surveyId: number) {
+    const form = await this.prisma.form.findUnique({
       where: {
-        id: parseInt(dto.formId),
-      },
-      data: {
-        title: dto.title,
+        id: surveyId,
       },
     });
-    return form;
+
+    // check if user owns the bookmark
+    if (!form || form.createdBy !== userId)
+      throw new ForbiddenException('Access to resources denied');
+
+    await this.prisma.form.delete({
+      where: {
+        id: surveyId,
+      },
+    });
   }
 
   async extractCss(dto: extractUrlDto) {

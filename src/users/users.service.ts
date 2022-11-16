@@ -20,7 +20,11 @@ export class UsersService {
         email: dto.email,
       },
     });
-    return this.signToken(user.id, user.email);
+    const token = await this.signToken(user.id, user.email);
+    return {
+      userId: user.id,
+      access_token: token.access_token,
+    };
   }
 
   async logIn(dto: UsersDto) {
