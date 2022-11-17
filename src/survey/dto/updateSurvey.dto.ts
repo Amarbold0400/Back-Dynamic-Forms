@@ -12,14 +12,14 @@ import { Type } from 'class-transformer';
 class QuestionOption {
   @IsString()
   @IsNotEmpty()
-  optionValue: string;
+  text: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  questionId: number;
 }
 
 class Question {
-  @IsNumber()
-  @IsNotEmpty()
-  formId: number;
-
   @IsNumber()
   @IsNotEmpty()
   order: number;
@@ -28,12 +28,16 @@ class Question {
   @IsNotEmpty()
   text: string;
 
+  @IsString()
+  @IsNotEmpty()
+  type: string;
+
   @IsOptional()
   @IsArray()
   @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => QuestionOption)
-  questionOptions?: QuestionOption[];
+  questionOption?: QuestionOption[];
 }
 
 export class updateSurveyDto {
@@ -45,10 +49,9 @@ export class updateSurveyDto {
   @IsNotEmpty()
   title: string;
 
-  @IsOptional()
   @IsArray()
   @IsNotEmpty()
-  @ValidateNested({ each: true })
+  @ValidateNested()
   @Type(() => Question)
-  questions?: Question[];
+  questions: Question[];
 }

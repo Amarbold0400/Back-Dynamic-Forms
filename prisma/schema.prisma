@@ -8,9 +8,9 @@ datasource db {
 }
 
 model Surveyor {
-  id Int @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   email String
-  name String
+  name  String
 
   forms Form[]
 }
@@ -18,63 +18,52 @@ model Surveyor {
 model Form {
   id Int @id @default(autoincrement())
 
-  surveyor Surveyor @relation(fields: [surveyorId], references: [id], onDelete: Cascade)
-  surveyorId Int 
+  surveyor   Surveyor @relation(fields: [surveyorId], references: [id], onDelete: Cascade)
+  surveyorId Int
 
   title String
 
   questions Question[]
-  results Result[]
+  results   Result[]
 }
 
 model Question {
   id Int @id @default(autoincrement())
 
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId Int
 
-  questionType QuestionType @relation(fields: [questionTypeId], references: [id], onDelete: Cascade)
-  questionTypeId Int
-
-  questionOption QuestionOption @relation(fields: [questionOptionId], references: [id], onDelete: Cascade)
-  questionOptionId Int
-
   order Int
-  text String
+  text  String
+  type  String
 
-  answer Answer[]
-}
-
-model QuestionType {
-  id Int @id @default(autoincrement())
-
-  type String
-
-  questions Question[]
+  options QuestionOption[]
+  answer  Answer[]
 }
 
 model QuestionOption {
   id Int @id @default(autoincrement())
 
-  text String
+  question Question @relation(fields: [questionId], references: [id])
 
-  question Question[]
+  text       String
+  questionId Int
 }
 
 model Surveyee {
-  id Int @id @default(autoincrement())
-  name String
-  email String
+  id      Int      @id @default(autoincrement())
+  name    String
+  email   String
   results Result[]
 }
 
 model Result {
   id Int @id @default(autoincrement())
 
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId Int
 
-  surveyee Surveyee @relation(fields: [surveyeeId], references: [id], onDelete: Cascade)
+  surveyee   Surveyee @relation(fields: [surveyeeId], references: [id], onDelete: Cascade)
   surveyeeId Int
 
   answers Answer[]
@@ -83,10 +72,10 @@ model Result {
 model Answer {
   id Int @id @default(autoincrement())
 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
 
-  result Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  result   Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
   resultId Int
 
   answer String

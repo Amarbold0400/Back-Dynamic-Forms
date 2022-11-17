@@ -37,11 +37,8 @@ export class SurveyController {
   }
 
   @Post('create')
-  createSurvey(
-    @GetSurveyor('id') userId: number,
-    @Body() dto: createSurveyDto,
-  ) {
-    return this.surveyService.createSurvey(userId, dto);
+  createSurvey(@GetSurveyor('id') userId: number) {
+    return this.surveyService.createSurvey(userId);
   }
 
   @Put('survey/:id')

@@ -27,50 +27,123 @@ export class SurveyService {
     });
   }
 
-  async createSurvey(userId: number, dto: createSurveyDto) {
-    const user = this.prisma.surveyor.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    if (!user) {
-      throw new ForbiddenException();
-    }
+  async createSurvey(userId: number) {
+    // const user = this.prisma.surveyor.findUnique({
+    //   where: {
+    //     id: userId,
+    //   },
+    // });
+    // if (!user) {
+    //   throw new ForbiddenException();
+    // }
     const form = await this.prisma.form.create({
       data: {
-        title: dto.title,
-        surveyor: {
-          connect: {
-            id: userId,
+        title: 'Untitled',
+        surveyorId: userId,
+        questions: {
+          create: {
+            type: 'none',
+            text: 'none',
+            order: 1,
           },
         },
       },
+      include: {
+        surveyor: true,
+        questions: true,
+      },
     });
+
+    // console.log(form);
 
     // return { id: form.id };
     return form;
   }
 
   async updateSurveyById(dto: updateSurveyDto, userId: number) {
-    const form = await this.prisma.form.update({
+    // Attempt 3
+    let question = await this.prisma.question.findFirst({
+      where: {
+        formId: dto.formId,
+      },
+    });
+    const update = await this.prisma.form.update({
       where: {
         id: dto.formId,
       },
       data: {
         title: dto.title,
-        surveyor: {
-          connect: {
-            id: userId,
-          },
-        },
         questions: {
           deleteMany: {},
-          createMany: { data: dto.questions },
+          createMany: {
+            data: [...dto.questions],
+          },
         },
       },
-      include: { questions: true },
+      include: {
+        questions: true,
+      },
     });
-    return form;
+
+    console.log(update);
+
+    // Attempt 2
+    // let question = await this.prisma.question.findFirst({
+    //   where: {
+    //     formId: dto.formId,
+    //   },
+    // });
+    // console.log(question);
+    // let form = await this.prisma.form.findFirst({
+    //   where: {
+    //     id: dto.formId,
+    //   },
+    //   include: {
+    //     questions: true,
+    //   },
+    // });
+    // console.log(form);
+    // dto.questions.forEach((el) => {
+    //   form.questions.push({
+    //     text: el.text,
+    //     id: question.id,
+    //     formId: dto.formId,
+    //     order: el.order,
+    //     type: el.type,
+    //   });
+    // });
+    // console.log(form);
+    // const updatedForm = await this.prisma.form.update({
+    //   where: {
+    //     id: dto.formId,
+    //   },
+    //   data: {
+    //     questions: {
+    //       set: form.questions,
+    //     },
+    //   },
+    // });
+    // console.log(updatedForm);
+    // Attempt1
+    // if (question !== null) {
+    //   await this.prisma.form.update({
+    //     where: {
+    //       id: dto.formId,
+    //     },
+    //     data: {
+    //       title: dto.title,
+    //       questions: {},
+    //     },
+    //   });
+    // } else {
+    //   return await this.prisma.form.findFirst({
+    //     where: {
+    //       id: dto.formId,
+    //     },
+    //   });
+    // }
+    // console.log(form);
+    // return form;
   }
 
   // async updateSurveyById(dto: updateSurveyDto, userId: number) {
