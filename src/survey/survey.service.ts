@@ -63,10 +63,37 @@ export class SurveyService {
             id: userId,
           },
         },
+        questions: {
+          deleteMany: {},
+          createMany: { data: dto.questions },
+        },
       },
+      include: { questions: true },
     });
     return form;
   }
+
+  // async updateSurveyById(dto: updateSurveyDto, userId: number) {
+  //   const form = await this.prisma.form.update({
+  //     where: {
+  //       id: dto.formId,
+  //     },
+  //     data: {
+  //       title: dto.title,
+  //       surveyor: {
+  //         connect: {
+  //           id: userId,
+  //         },
+  //       },
+  //       questions: {
+  //         connect: {
+  //           id: dto.formId,
+  //         },
+  //       },
+  //     },
+  //   });
+  //   return form;
+  // }
 
   async deleteSurveyById(userId: number, surveyId: number) {
     const form = await this.prisma.form.findUnique({
