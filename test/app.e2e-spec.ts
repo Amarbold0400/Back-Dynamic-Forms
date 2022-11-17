@@ -78,8 +78,8 @@ describe('App e2e', () => {
           .post('/signup')
           .withBody(dto)
           .expectStatus(201)
-          .stores('uId', 'userId');
-        // .inspect()
+          .stores('uId', 'userId')
+          .inspect();
       });
     });
 

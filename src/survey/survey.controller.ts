@@ -16,6 +16,7 @@ import { SurveyService } from './survey.service';
 import { createSurveyDto, updateSurveyDto, extractUrlDto } from './dto';
 import { JwtGuard } from '../users/guard/jwt.guard';
 import { GetSurveyor } from '../users/decorator/get-surveyor.decorator';
+import { Surveyor } from '@prisma/client';
 
 @UseGuards(JwtGuard)
 @Controller()
@@ -48,7 +49,7 @@ export class SurveyController {
     @GetSurveyor('id') userId: number,
     @Body() dto: updateSurveyDto,
   ) {
-    return this.surveyService.updateSurveyById(dto);
+    return this.surveyService.updateSurveyById(dto, userId);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -39,21 +39,31 @@ export class SurveyService {
     }
     const form = await this.prisma.form.create({
       data: {
-        createdBy: userId,
         title: dto.title,
+        surveyor: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     });
 
-    return { id: form.id };
+    // return { id: form.id };
+    return form;
   }
 
-  async updateSurveyById(dto: updateSurveyDto) {
+  async updateSurveyById(dto: updateSurveyDto, userId: number) {
     const form = await this.prisma.form.update({
       where: {
-        id: parseInt(dto.formId),
+        id: dto.formId,
       },
       data: {
         title: dto.title,
+        surveyor: {
+          connect: {
+            id: userId,
+          },
+        },
       },
     });
     return form;
