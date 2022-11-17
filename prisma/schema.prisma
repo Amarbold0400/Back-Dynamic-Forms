@@ -18,8 +18,8 @@ model Surveyor {
 model Form {
   id Int @id @default(autoincrement())
 
-  surveyor Surveyor @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  createdBy Int 
+  surveyor Surveyor @relation(fields: [surveyorId], references: [id], onDelete: Cascade)
+  surveyorId Int 
 
   title String
 

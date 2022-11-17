@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,7 +13,7 @@ export class SurveyService {
   getAllSurveys(userId: number) {
     return this.prisma.form.findMany({
       where: {
-        createdBy: userId,
+        surveyorId: userId,
       },
     });
   }
@@ -23,7 +22,7 @@ export class SurveyService {
     return this.prisma.form.findFirst({
       where: {
         id: surveyId,
-        createdBy: userId,
+        surveyorId: userId,
       },
     });
   }
@@ -77,7 +76,7 @@ export class SurveyService {
     });
 
     // check if user owns the bookmark
-    if (!form || form.createdBy !== userId)
+    if (!form || form.surveyorId !== userId)
       throw new ForbiddenException('Access to resources denied');
 
     await this.prisma.form.delete({

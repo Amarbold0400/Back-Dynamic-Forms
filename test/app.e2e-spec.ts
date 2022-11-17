@@ -168,7 +168,7 @@ describe('App e2e', () => {
     describe('Create Survey', () => {
       const dto = {
         title: 'First Survey',
-        createdBy: '$S{uId}',
+        surveyorId: '$S{uId}',
       };
       it('it should create a survey', () => {
         return pactum

@@ -8,5 +8,5 @@ export class createSurveyDto {
 
   @IsNumber()
   @IsNotEmpty()
-  createdBy: number;
+  surveyorId: number;
 }
