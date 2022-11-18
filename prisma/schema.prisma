@@ -75,8 +75,8 @@ model Result {
 model Answer {
   id Int @id @default(autoincrement())
 
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId Int
+  Question   Question? @relation(fields: [questionId], references: [id])
+  questionId Int?
 
   result   Result @relation(fields: [resultId], references: [id], onDelete: Cascade)
   resultId Int

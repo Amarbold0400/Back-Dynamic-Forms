@@ -17,18 +17,21 @@ export class SurveyService {
       },
       include: {
         questions: true,
+        results: true,
       },
     });
   }
 
-  getSurveyById(userId: number, surveyId: number) {
+  // getSurveyById(userId: number, surveyId: number) {
+  getSurveyById(surveyId: number) {
     return this.prisma.form.findFirst({
       where: {
         id: surveyId,
-        surveyorId: userId,
+        // surveyorId: userId,
       },
       include: {
         questions: true,
+        results: true,
       },
     });
   }
@@ -48,8 +51,8 @@ export class SurveyService {
         surveyorId: userId,
         questions: {
           create: {
-            type: 'none',
-            text: 'none',
+            type: 'TextInput',
+            text: 'Enter label here...',
             order: 1,
           },
         },

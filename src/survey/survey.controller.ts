@@ -18,11 +18,11 @@ import { JwtGuard } from '../users/guard/jwt.guard';
 import { GetSurveyor } from '../users/decorator/get-surveyor.decorator';
 import { Surveyor } from '@prisma/client';
 
-@UseGuards(JwtGuard)
 @Controller()
 export class SurveyController {
   constructor(private surveyService: SurveyService) {}
 
+  @UseGuards(JwtGuard)
   @Get('allSurveys')
   getAllSurveys(@GetSurveyor('id') userId: number) {
     return this.surveyService.getAllSurveys(userId);
@@ -30,17 +30,20 @@ export class SurveyController {
 
   @Get('survey/:id')
   getSurveyById(
-    @GetSurveyor('id') userId: number,
+    // @GetSurveyor('id') userId: number,
     @Param('id', ParseIntPipe) surveyId: number,
   ) {
-    return this.surveyService.getSurveyById(userId, surveyId);
+    return this.surveyService.getSurveyById(surveyId);
+    // return this.surveyService.getSurveyById(userId, surveyId);
   }
 
+  @UseGuards(JwtGuard)
   @Post('create')
   createSurvey(@GetSurveyor('id') userId: number) {
     return this.surveyService.createSurvey(userId);
   }
 
+  @UseGuards(JwtGuard)
   @Put('survey/:id')
   updateSurveyById(
     @GetSurveyor('id') userId: number,
@@ -49,6 +52,7 @@ export class SurveyController {
     return this.surveyService.updateSurveyById(dto, userId);
   }
 
+  @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('survey/:id')
   deleteSurveyById(
@@ -58,6 +62,7 @@ export class SurveyController {
     return this.surveyService.deleteSurveyById(userId, surveyId);
   }
 
+  @UseGuards(JwtGuard)
   @Post('extractCss')
   extractCss(@Body() dto: extractUrlDto) {
     return this.surveyService.extractCss(dto);
