@@ -33,9 +33,12 @@ model Question {
   form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
   formId Int
 
-  order Int
-  text  String
-  type  String
+  type                 String  @default("TextInput")
+  order                Int
+  text                 String  @default("Enter your field label")
+  isRequired           Boolean @default(false)
+  isPlaceholderVisible Boolean @default(false)
+  placeholder          String  @default("Input placeholder here...")
 
   options QuestionOption[]
   answer  Answer[]
@@ -44,10 +47,10 @@ model Question {
 model QuestionOption {
   id Int @id @default(autoincrement())
 
-  question Question @relation(fields: [questionId], references: [id])
-
-  text       String
+  question   Question @relation(fields: [questionId], references: [id])
   questionId Int
+
+  text String
 }
 
 model Surveyee {

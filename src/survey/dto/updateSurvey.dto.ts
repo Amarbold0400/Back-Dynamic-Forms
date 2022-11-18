@@ -13,10 +13,6 @@ class QuestionOption {
   @IsString()
   @IsNotEmpty()
   text: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  questionId: number;
 }
 
 class Question {
@@ -37,7 +33,7 @@ class Question {
   @IsNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => QuestionOption)
-  questionOption?: QuestionOption[];
+  options?: QuestionOption[];
 }
 
 export class updateSurveyDto {

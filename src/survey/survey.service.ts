@@ -15,6 +15,9 @@ export class SurveyService {
       where: {
         surveyorId: userId,
       },
+      include: {
+        questions: true,
+      },
     });
   }
 
@@ -23,6 +26,9 @@ export class SurveyService {
       where: {
         id: surveyId,
         surveyorId: userId,
+      },
+      include: {
+        questions: true,
       },
     });
   }
@@ -86,6 +92,7 @@ export class SurveyService {
     });
 
     console.log(update);
+    return update;
 
     // Attempt 2
     // let question = await this.prisma.question.findFirst({
