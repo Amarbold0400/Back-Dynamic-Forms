@@ -56,26 +56,23 @@ export class ResultService {
     console.log(update);
   }
 
-  //   getAllSurveys(userId: number) {
-  //     return this.prisma.form.findMany({
-  //       where: {
-  //         surveyorId: userId,
-  //       },
-  //       include: {
-  //         questions: true,
-  //       },
-  //     });
-  //   }
+  async getResultsByFormId(id: number) {
+    const results = await this.prisma.result.findMany({
+      where: {
+        formId: id,
+      },
+      include: {
+        answers: true,
+      },
+    });
+    return results;
+  }
 
-  //   getSurveyById(userId: number, surveyId: number) {
-  //     return this.prisma.form.findFirst({
-  //       where: {
-  //         id: surveyId,
-  //         surveyorId: userId,
-  //       },
-  //       include: {
-  //         questions: true,
-  //       },
-  //     });
-  //   }
+  getAllAnswers(resultId: number) {
+    return this.prisma.answer.findMany({
+      where: {
+        resultId,
+      },
+    });
+  }
 }

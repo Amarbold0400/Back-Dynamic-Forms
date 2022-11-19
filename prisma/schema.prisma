@@ -23,8 +23,44 @@ model Form {
 
   title String
 
+  css Style?
+
   questions Question[]
   results   Result[]
+}
+
+model Style {
+  id Int @id @default(autoincrement())
+
+  form   Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId Int  @unique
+
+  themeButtonBackground              String
+  themeButtonBorderColor             String
+  themeButtonColor                   String
+  themeFormGroupBackgroundColor      String
+  themeFormGroupBackgroundHoverColor String
+  themeFormGroupBorderColor          String
+  themeFormGroupBorderHoverColor     String
+  themeFormGroupBorderStyle          String
+  themeFormGroupBorderWidth          String
+  themeGlobalBackgroundColor         String
+  themeGlobalFontColor               String
+  themeGlobalFontFamily              String
+  themeGlobalFontSize                String
+  themeGlobalLinkColor               String
+  themeHelpTextColor                 String
+  themeHelpTextFontSize              String
+  themeHelpTextMarginTop             String
+  themeInputBorderColor              String
+  themeInputBorderRadius             String
+  themeInputFocusBorderColor         String
+  themeInputHoverBorderColor         String
+  themeInputShadowColor              String
+  themeLabelFontSize                 String
+  themeLabelFontWeight               String
+  themeLabelMarginBottom             String
+  themePrimaryColor                  String
 }
 
 model Question {

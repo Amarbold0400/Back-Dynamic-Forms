@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Style" ALTER COLUMN "themeGlobalFontSize" SET DATA TYPE TEXT,
+ALTER COLUMN "themeHelpTextFontSize" SET DATA TYPE TEXT,
+ALTER COLUMN "themeInputBorderRadius" SET DATA TYPE TEXT,
+ALTER COLUMN "themeLabelFontSize" SET DATA TYPE TEXT,
+ALTER COLUMN "themeLabelFontWeight" SET DATA TYPE TEXT,
+ALTER COLUMN "themeLabelMarginBottom" SET DATA TYPE TEXT;

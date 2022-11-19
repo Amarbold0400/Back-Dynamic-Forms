@@ -30,11 +30,15 @@ export class ResultController {
     return this.resultService.createResult(surveyId, dto);
   }
 
-  // @Get('survey/:id')
-  // getResultsByFormId(
-  //   @GetSurveyor('id') userId: number,
-  //   @Param('id', ParseIntPipe) surveyId: number,
-  // ) {
-  //   return this.surveyService.getSurveyById(userId, surveyId);
-  // }
+  @UseGuards(JwtGuard)
+  @Get('result/:id')
+  getResultsByFormId(@Param('id', ParseIntPipe) id: number) {
+    return this.resultService.getResultsByFormId(id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('answers/:id')
+  getAllAnswers(@Param('id', ParseIntPipe) resultId: number) {
+    return this.resultService.getAllAnswers(resultId);
+  }
 }

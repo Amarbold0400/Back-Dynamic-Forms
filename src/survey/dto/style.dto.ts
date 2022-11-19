@@ -1,17 +1,8 @@
 /* eslint-disable prettier/prettier */
-import {
-  IsNumber,
-  IsString,
-  IsNotEmpty,
-  IsArray,
-  ValidateNested,
-  IsOptional,
-  IsObject,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsInt, IsString, IsNotEmpty } from 'class-validator';
 
-class Style {
-  @IsNumber()
+export class StyleDto {
+  @IsInt()
   @IsNotEmpty()
   formId: number;
 
@@ -92,50 +83,4 @@ class Style {
 
   @IsString()
   themePrimaryColor: string;
-}
-
-class QuestionOption {
-  @IsString()
-  @IsNotEmpty()
-  text: string;
-}
-
-class Question {
-  @IsNumber()
-  @IsNotEmpty()
-  order: number;
-
-  @IsString()
-  @IsNotEmpty()
-  text: string;
-
-  @IsString()
-  @IsNotEmpty()
-  type: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => QuestionOption)
-  options?: QuestionOption[];
-}
-
-export class updateSurveyDto {
-  @IsNumber()
-  @IsNotEmpty()
-  formId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
-  @IsObject()
-  css: Style;
-
-  @IsArray()
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Question)
-  questions: Question[];
 }
